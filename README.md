@@ -174,8 +174,9 @@ tagRows: 6
 tagSize: 0.095
 tagSpacing: 0.3
 ```
-These values can be adjusted based on the AprilGrid 
 ---
+These values can be adjusted based on the AprilGrid 
+
 
 ## Convert ROS2 Bag to ROS1 (If Needed)
 
