@@ -83,7 +83,8 @@ Pose + Trajectory Estimation
 | Python         | 3.8+                    |
 
 ---
-
+* The project is tested on Ubuntu 24.04 using a Docker-based workflow. 
+* Ubuntu 20.04 and 22.04 may also work depending on ROS 2 and ZED SDK compatibility.
 
 # Install ZED SDK
 
@@ -234,9 +235,8 @@ rosrun kalibr kalibr_calibrate_imu_camera \
 --imu /data/kalibr_imu_chain.yaml \
 --target /data/april_6x6.yaml
 ```
-
-The IMU intrinsic used for calibration of camera-imu is calculated using Allan variance which is described below:
 ---
+The IMU intrinsic used for calibration of camera-imu is calculated using Allan variance which is described below:
 
 # Calibration Outputs
 
