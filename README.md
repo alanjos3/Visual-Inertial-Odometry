@@ -412,6 +412,41 @@ ros2 bag play <bag_file>
 
 ---
 
+# Optional Preprocessing Utilities
+
+Additional helper scripts are provided for preprocessing image topics before running OpenVINS.
+
+```bash
+camera_masking.py
+```
+Applies masks to camera images to remove unwanted regions and reduce feature tracking errors or drift in challenging environments (e.g., underwater scenes, reflections, frame boundaries).
+
+Example use cases:
+
+* Removing distorted image boundaries
+* Ignoring vehicle structures or propellers
+* Reducing dynamic noise regions
+
+```bash
+republish_compressed_images.py
+```
+Republishes compressed ZED image topics as standard ROS image topics for OpenVINS compatibility.
+
+This is useful when the ZED wrapper publishes:
+
+```bash
+/compressed
+```
+image streams instead of raw image topics expected by OpenVINS.
+
+These scripts are located in:
+
+```bash
+Utils/
+```
+
+and can be modified based on the required topic names or masking regions.
+
 # Outputs
 
 | Topic               | Description          |
