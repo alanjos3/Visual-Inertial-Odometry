@@ -9,8 +9,7 @@ This repository provides:
 * Camera and IMU calibration workflow
 * Allan variance-based IMU intrinsic estimation
 * OpenVINS MSCKF-based VIO
-* Dockerized deployment
-* Underwater calibration and validation workflow
+
 
 ---
 
@@ -76,12 +75,12 @@ Pose + Trajectory Estimation
 
 # Software Requirements
 
-| Component | Version                 |
-| --------- | ----------------------- |
-| Ubuntu    |                         |
-| CUDA      | Compatible with ZED SDK |
-| Docker    | Latest stable           |
-| Python    | 3.8+                    |
+| Component      | Version                 |
+| ---------------|-------------------------|
+| Host system    | Ubuntu 20.04            |
+| CUDA           | Compatible with ZED SDK |
+| Docker         | Latest stable           |
+| Python         | 3.8+                    |
 
 ---
 
@@ -89,25 +88,6 @@ Pose + Trajectory Estimation
 # Install ZED SDK
 
 Download the correct SDK version from Stereolabs based on your CUDA and Ubuntu version.
----
-
-# Repository Structure
-
-```text
-Visual-Inertial-Odometry/
-│
-├── allan_variance_ros/
-├── kalibr/
-├── open_vins/
-├── zed_ros2_wrapper/
-│
-├── calibration/
-├── configs/
-├── scripts/
-├── bags/
-│
-└── README.md
-```
 
 ---
 
@@ -460,10 +440,11 @@ RViz provides real-time trajectory visualization.
 
 # References
 
-* OpenVINS
-* Kalibr
-* Allan Variance ROS
-* Stereolabs ZED SDK
+* [OpenVINS](https://github.com/rpng/open_vins)
+* [Kalibr](https://github.com/ethz-asl/kalibr)
+* [Allan Variance ROS](https://github.com/ori-drs/allan_variance_ros)
+* [Stereolabs ZED SDK](https://www.stereolabs.com/en-in/developers/release)
+
 
 ---
 
