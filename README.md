@@ -442,7 +442,7 @@ image streams instead of raw image topics expected by OpenVINS.
 These scripts are located in:
 
 ```bash
-Utils/
+utils/
 ```
 
 and can be modified based on the required topic names or masking regions.
