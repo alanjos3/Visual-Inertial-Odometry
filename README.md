@@ -83,8 +83,46 @@ Pose + Trajectory Estimation
 | Python         | 3.8+                    |
 
 ---
-* The project is tested on Ubuntu 24.04 using a Docker-based workflow. 
-* Ubuntu 20.04 and 22.04 may also work depending on ROS 2 and ZED SDK compatibility.
+* The project is tested on Ubuntu 20.04 using a Docker-based workflow. 
+* Ubuntu 22.04 and 24.04 also work depending on ROS 2 and ZED SDK compatibility.
+
+# Docker Installation
+
+Install Docker on Ubuntu:
+
+```bash
+sudo apt update
+sudo apt install -y docker.io
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+newgrp docker
+docker --version
+```
+
+## Dockerfiles in This Repository
+
+| Dockerfile | Purpose |
+| ---------- | ------- |
+| `kalibr/Dockerfile_ros1_20_04` | Kalibr container for ROS 1 Noetic / Ubuntu 20.04 |
+| `open_vins/Dockerfile_ros2_20_04` | OpenVINS container for ROS 2 Galactic / Ubuntu 20.04 |
+| `open_vins/Dockerfile_ros2_22_04` | OpenVINS container for ROS 2 Humble / Ubuntu 22.04 |
+| `zed_ros2_wrapper/docker/Dockerfile.desktop-humble` | ZED ROS 2 Wrapper desktop image for ROS 2 Humble |
+| `zed_ros2_wrapper/docker/Dockerfile.l4t-humble` | ZED ROS 2 Wrapper Jetson/L4T image for ROS 2 Humble |
+
+The `allan_variance_ros` package does not provide a top-level runtime Dockerfile like Kalibr, OpenVINS, or the ZED wrapper. In this repository it provides a devcontainer setup instead:
+
+* `allan_variance_ros/.devcontainer/Dockerfile.devcontainer`
+* `allan_variance_ros/.devcontainer/docker-compose.devcontainer.yaml`
+
+Use the `20.04` Dockerfiles for the workflow documented below unless you are targeting a different ROS/Ubuntu version.
+
+## Docker Images Used in This Setup
+
+This project setup was run using the following local Docker images:
+
+* `kalibr:latest`
+* `openvins_ros2:latest`
+* `openvins:ros1-20.04`
 
 # Install ZED SDK
 
@@ -194,7 +232,19 @@ rosbags-convert \
 
 ---
 
-## Run Kalibr Docker
+## Build and Run Kalibr Docker
+
+Build the Kalibr image first if it is not already available locally:
+
+```bash
+cd kalibr
+
+docker build \
+-f Dockerfile_ros1_20_04 \
+-t kalibr:latest .
+```
+
+Then run the container:
 
 ```bash
 xhost +local:root
@@ -204,12 +254,14 @@ docker run -it \
 -e "QT_X11_NO_MITSHM=1" \
 -v "/tmp/.X11-unix:/tmp/.X11-unix:rw" \
 -v "$FOLDER:/data" \
-kalibr
+kalibr:latest
 ```
 
 Inside container:
 
 ```bash
+cd /catkin_ws
+
 source devel/setup.bash
 ```
 
@@ -248,7 +300,12 @@ Generated files:
 | `kalibr_imu_chain.yaml`    | IMU intrinsic parameters |
 | `kalibr_imucam_chain.yaml` | Camera–IMU extrinsics    |
 
-These files are required for OpenVINS integration.
+Place these files in the repository `config/` directory as:
+
+* `config/kalibr_imu_chain.yaml`
+* `config/kalibr_imucam_chain.yaml`
+
+The OpenVINS estimator settings used in this project are also stored in `config/estimator_config.yaml`, which references the two calibration files above using relative paths.
 
 ---
 
@@ -321,11 +378,14 @@ to account for unmodeled real-world sensor errors.
 
 # Step 4 — OpenVINS Setup
 
-## Clone OpenVINS
+## OpenVINS Source
 
-```bash
-git clone https://github.com/rpng/open_vins.git
-```
+The repository already includes the OpenVINS source tree in `open_vins/`.
+The project-specific OpenVINS configuration files used for this pipeline are stored in the top-level `config/` folder:
+
+* `config/estimator_config.yaml`
+* `config/kalibr_imu_chain.yaml`
+* `config/kalibr_imucam_chain.yaml`
 
 ---
 
@@ -336,23 +396,31 @@ cd open_vins
 
 docker build \
 -f Dockerfile_ros2_20_04 \
--t openvins_ros2 .
+-t openvins_ros2:latest .
+
+cd ..
 ```
+
+Use `Dockerfile_ros2_22_04` instead if you are running the ROS 2 Humble / Ubuntu 22.04 setup.
+If `openvins_ros2:latest` already exists locally, you can skip this build step.
 
 ---
 
 ## Run Container
 
 ```bash
+export VIO_ROOT=$(pwd)
+
 xhost +local:docker
 
 docker run -it \
 --net=host \
 --privileged \
 -e DISPLAY=$DISPLAY \
--v /tmp/.X11-unix:/tmp/.X11-unix \
--v ~/openvins:/root/openvins \
-openvins_ros2 bash
+-e QT_X11_NO_MITSHM=1 \
+-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+-v "$VIO_ROOT:/catkin_ws/src/Visual-Inertial-Odometry" \
+openvins_ros2:latest bash
 ```
 
 ---
@@ -362,12 +430,16 @@ openvins_ros2 bash
 Inside container:
 
 ```bash
-cd ~/openvins/
+cd /catkin_ws
 
-source /opt/ros/<distro>/setup.bash
+source /opt/ros/galactic/setup.bash
+
+colcon build --event-handlers console_cohesion+
 
 source install/setup.bash
 ```
+
+If you build with `Dockerfile_ros2_22_04`, source `/opt/ros/humble/setup.bash` instead.
 
 ---
 
@@ -376,8 +448,12 @@ source install/setup.bash
 Launch OpenVINS:
 
 ```bash
-ros2 launch ov_msckf subscribe.launch.py rviz_enable:=true
+ros2 launch ov_msckf subscribe.launch.py \
+config_path:=/catkin_ws/src/Visual-Inertial-Odometry/config/estimator_config.yaml \
+rviz_enable:=true
 ```
+
+This launch command uses the OpenVINS estimator and calibration YAMLs stored in the repository `config/` folder.
 
 ---
 
@@ -448,4 +524,3 @@ RViz provides real-time trajectory visualization.
 
 
 ---
-
