@@ -1,0 +1,33 @@
+# config/zed2i_yaml
+# Parameters for Stereolabs zed2i camera
+
+/**:
+    ros__parameters:
+        general:
+            camera_model: 'zed2i'
+            camera_name: 'zed'
+            grab_resolution: 'HD720'
+            grab_frame_rate: 30
+            pub_frame_rate: 30.0
+            input_type: 'usb'        # ← changed from stream
+        video:
+            brightness: 4
+            contrast: 4
+            hue: 0  # ← changed to true
+        depth:
+            depth_mode: 'NONE'
+            min_depth: 0.01
+            max_depth: 15.0
+        sensors:
+            publish_imu_data: true
+            sensors_image_sync: false 
+            publish_mag_data: false
+            publish_baro_data: false
+            publish_temp_data: false
+            sensors_pub_rate: 200.0
+        svo:
+            use_svo_timestamps: true
+        pos_tracking:
+            pos_tracking_enabled: false
+            area_memory: false
+
