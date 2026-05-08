@@ -348,11 +348,9 @@ rosrun allan_variance_ros analysis.py \
 
 ---
 
-# Important Note
-
-The estimated IMU noise values are often optimistic.
-
-It is recommended to inflate the estimated values by:
+> Note:
+> The estimated IMU noise values are often optimistic.
+> It is recommended to inflate the estimated values by:
 
 ```text
 10x – 20x
@@ -394,7 +392,6 @@ Use `Dockerfile_ros2_22_04` instead if you are running the ROS 2 Humble / Ubuntu
 ## Run Container
 
 ```bash
-export VIO_ROOT=$(pwd)
 
 xhost +local:docker
 
@@ -404,7 +401,6 @@ docker run -it \
 -e DISPLAY=$DISPLAY \
 -e QT_X11_NO_MITSHM=1 \
 -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
--v "$VIO_ROOT:/catkin_ws/src/Visual-Inertial-Odometry" \
 openvins_ros2:latest bash
 ```
 
@@ -415,12 +411,7 @@ openvins_ros2:latest bash
 Inside container:
 
 ```bash
-cd /catkin_ws
-
 source /opt/ros/galactic/setup.bash
-
-colcon build --event-handlers console_cohesion+
-
 source install/setup.bash
 ```
 
@@ -442,7 +433,7 @@ This launch command uses the OpenVINS estimator and calibration YAMLs stored in 
 
 ---
 
-# Step 6 — Play Dataset
+## Validate
 
 In a separate terminal:
 
