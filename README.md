@@ -105,24 +105,10 @@ docker --version
 | ---------- | ------- |
 | `kalibr/Dockerfile_ros1_20_04` | Kalibr container for ROS 1 Noetic / Ubuntu 20.04 |
 | `open_vins/Dockerfile_ros2_20_04` | OpenVINS container for ROS 2 Galactic / Ubuntu 20.04 |
-| `open_vins/Dockerfile_ros2_22_04` | OpenVINS container for ROS 2 Humble / Ubuntu 22.04 |
-| `zed_ros2_wrapper/docker/Dockerfile.desktop-humble` | ZED ROS 2 Wrapper desktop image for ROS 2 Humble |
-| `zed_ros2_wrapper/docker/Dockerfile.l4t-humble` | ZED ROS 2 Wrapper Jetson/L4T image for ROS 2 Humble |
 
-The `allan_variance_ros` package does not provide a top-level runtime Dockerfile like Kalibr, OpenVINS, or the ZED wrapper. In this repository it provides a devcontainer setup instead:
-
-* `allan_variance_ros/.devcontainer/Dockerfile.devcontainer`
-* `allan_variance_ros/.devcontainer/docker-compose.devcontainer.yaml`
 
 Use the `20.04` Dockerfiles for the workflow documented below unless you are targeting a different ROS/Ubuntu version.
 
-## Docker Images Used in This Setup
-
-This project setup was run using the following local Docker images:
-
-* `kalibr:latest`
-* `openvins_ros2:latest`
-* `openvins:ros1-20.04`
 
 # Install ZED SDK
 
@@ -402,7 +388,6 @@ cd ..
 ```
 
 Use `Dockerfile_ros2_22_04` instead if you are running the ROS 2 Humble / Ubuntu 22.04 setup.
-If `openvins_ros2:latest` already exists locally, you can skip this build step.
 
 ---
 
